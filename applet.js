@@ -135,14 +135,6 @@ class CinnamenuApplet extends TextIconApplet {
                           setting.cb ? (...args) => setting.cb.call(this, ...args) : null ) );
     }
 
-    getGridValues() {
-        const gridWidth = this.appsView.applicationsGridBox.width;
-        const columns = Math.floor(gridWidth / (240 * global.ui_scale));
-        const columnWidth = Math.floor(gridWidth / columns);
-        //bigger if large icons
-        //width = Math.max(width, this.getAppIconSize() * this.settings.appsGridColumnCount * 1.5);
-        return {columnWidth: columnWidth, columns: columns};
-    }
 
     getAppIconSize() {
         if (this.settings.applicationsViewMode === ApplicationsViewModeLIST) {
@@ -554,7 +546,7 @@ class CinnamenuApplet extends TextIconApplet {
         if (!newWidth) {
             newWidth = this.settings.customMenuWidth;
         }
-        //this.categoriesView.groupCategoriesWorkspacesScrollBox.width = 180;
+        this.categoriesView.groupCategoriesWorkspacesScrollBox.width = 200;
         let leftSideWidth = this.categoriesView.groupCategoriesWorkspacesScrollBox.width;
         if (this.settings.sidebarPlacement === PlacementLEFT ||
                                                 this.settings.sidebarPlacement === PlacementRIGHT) {
@@ -567,8 +559,16 @@ class CinnamenuApplet extends TextIconApplet {
                                                 this.settings.sidebarPlacement === PlacementBOTTOM) {
             bottomPaneMinWidth = this.bottomPane.width;
         }
-        let menuWidth = this.getScreenWorkArea().width - 65;
+        let menuWidth = this.getScreenWorkArea().width - 260;
         this.appsView.applicationsGridBox.width = menuWidth;
+    }
+    getGridValues() {
+        const gridWidth = this.appsView.applicationsGridBox.width - 240;
+        const columns = 6;
+        const columnWidth = Math.floor(gridWidth / columns);
+        //bigger if large icons
+        //width = Math.max(width, this.getAppIconSize() * this.settings.appsGridColumnCount * 1.5);
+        return {columnWidth: columnWidth, columns: columns};
     }
 
     refresh() {
@@ -2014,12 +2014,12 @@ class SearchView {
         this.searchActiveIcon = new St.Icon({ style_class: 'menu-search-entry-icon', icon_name: 'edit-clear' });
         this.searchEntry = new St.Entry({ name: 'menu-search-entry', //hint_text: HINT_TEXT,
                                           track_hover: true, can_focus: true,
-                                            style: 'min-width: 100px;'});
+                                            style: 'max-width: 100px;'});
         this.searchEntryText = this.searchEntry.clutter_text;
 
         this.searchEntry.set_primary_icon(this.searchInactiveIcon);
         this.searchBox = new St.BoxLayout({ style_class: 'menu-search-box',
-                                            style: /*'padding-right: 7px;*/ 'min-width: 160px;' });
+                                            style: 'padding-right: 600px; max-width: 100px;' });
         this.searchBox.add(this.searchEntry, {  expand: true, x_align: St.Align.START, y_align: St.Align.MIDDLE });
     }
 
@@ -2046,8 +2046,8 @@ class Sidebar {
         const style_class = this.appThis.settings.useBoxStyle ? 'menu-favorites-box' : '';
         this.innerBox = new St.BoxLayout({style_class: style_class,
                         vertical: (sidebarPlacement === PlacementLEFT || sidebarPlacement === PlacementRIGHT) });
-        this.sidebarScrollBox = new St.ScrollView({x_fill: true, y_fill: false, x_align: St.Align.MIDDLE,
-                            y_align: St.Align.MIDDLE, style_class: 'vfade menu-favorites-scrollbox' });
+        this.sidebarScrollBox = new St.ScrollView({x_fill: true, y_fill: false, x_align: St.Align.START,
+                            y_align: St.Align.START, style_class: 'vfade menu-favorites-scrollbox', style: 'padding: 100px 300px 100px 200px;' });
         const vscroll_bar = this.sidebarScrollBox.get_vscroll_bar();
         this.appThis.displaySignals.connect(vscroll_bar, 'scroll-start',
                                                                 () => { this.appThis.menu.passEvents = true; });
